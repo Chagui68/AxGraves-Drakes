@@ -2,8 +2,8 @@ prefix: "<gradient:#FF00FF:#DD00FF><b>AxGraves</b></gradient> &7» "
 
 # how fast should the graves disappear
 # set to -1 to make graves never despawn
-# in seconds (468000 = 130 hours)
-despawn-time-seconds: 468000
+# in seconds (604800 = 7 days, matching the legacy DrakesCraft graves)
+despawn-time-seconds: 604800
 
 # should graves drop all items on the ground when they expire?
 # if false: items will be removed
@@ -17,7 +17,7 @@ enable-instant-pickup: true
 
 # only works if enable-instant-pickup is true
 # this makes it that only the owner of the grave will be able to instantly pick it up
-instant-pickup-only-own: false
+instant-pickup-only-own: true
 
 # if you enable this, items will be taken away and stored in the grave on death, even if third party plugin tries to keep them
 # enabling this will also make the keep-inventory gamerule ineffective
@@ -47,7 +47,7 @@ auto-rotation:
 
 # true: only the person who died and people with axgraves.admin can open the grave
 # false: everyone can open the grave
-interact-only-own: false
+interact-only-own: true
 
 # should the player lose any xp on death?
 # this is a percentage, so 0.5 would be 50% xp

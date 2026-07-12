@@ -156,43 +156,44 @@ public class Grave {
             if (CONFIG.getBoolean("instant-pickup-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId())) return;
 
             PlayerInventory inventory = opener.getInventory();
-            for (ItemStack it : gui.getContents()) {
+            for (int graveSlot = 0; graveSlot < gui.getSize(); graveSlot++) {
+                ItemStack it = gui.getItem(graveSlot);
                 if (it == null) continue;
 
                 if (CONFIG.getBoolean("auto-equip-armor", true)) {
                     Material material = it.getType();
                     if (isSlotEmpty(inventory.getHelmet()) && Utils.isHelmet(material)) {
-                        inventory.setHelmet(it);
-                        it.setAmount(0);
+                        inventory.setHelmet(it.clone());
+                        gui.setItem(graveSlot, null);
                         continue;
                     }
 
                     if (isSlotEmpty(inventory.getChestplate()) && Utils.isChestplate(material)) {
-                        inventory.setChestplate(it);
-                        it.setAmount(0);
+                        inventory.setChestplate(it.clone());
+                        gui.setItem(graveSlot, null);
                         continue;
                     }
 
                     if (isSlotEmpty(inventory.getLeggings()) && Utils.isLeggings(material)) {
-                        inventory.setLeggings(it);
-                        it.setAmount(0);
+                        inventory.setLeggings(it.clone());
+                        gui.setItem(graveSlot, null);
                         continue;
                     }
 
                     if (isSlotEmpty(inventory.getBoots()) && Utils.isBoots(material)) {
-                        inventory.setBoots(it);
-                        it.setAmount(0);
+                        inventory.setBoots(it.clone());
+                        gui.setItem(graveSlot, null);
                         continue;
                     }
                 }
 
-                final Collection<ItemStack> ar = inventory.addItem(it).values();
+                final Collection<ItemStack> ar = inventory.addItem(it.clone()).values();
                 if (ar.isEmpty()) {
-                    it.setAmount(0);
+                    gui.setItem(graveSlot, null);
                     continue;
                 }
 
-                it.setAmount(ar.iterator().next().getAmount());
+                gui.setItem(graveSlot, ar.iterator().next());
             }
 
             update();
