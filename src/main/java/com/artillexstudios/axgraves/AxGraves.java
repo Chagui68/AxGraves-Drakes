@@ -14,6 +14,7 @@ import com.artillexstudios.axgraves.commands.CommandManager;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.migration.MoreGravesImporter;
 import com.artillexstudios.axgraves.hooks.SlimefunHook;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
@@ -67,6 +68,7 @@ public final class AxGraves extends AxPlugin {
 
         if (CONFIG.getBoolean("save-graves.enabled", true)) {
             SpawnedGraves.loadFromFile();
+            MoreGravesImporter.importIfNeeded();
         }
 
         TickGraves.start();

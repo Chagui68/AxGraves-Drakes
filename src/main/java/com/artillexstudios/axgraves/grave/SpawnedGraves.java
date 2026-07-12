@@ -17,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
@@ -56,7 +58,7 @@ public class SpawnedGraves {
         return graves;
     }
 
-    public static void saveToFile() {
+    public static boolean saveToFile() {
         final JsonArray array = new JsonArray(graves.size());
 
         for (Grave grave : graves) {
@@ -71,10 +73,20 @@ public class SpawnedGraves {
         }
 
         File file = new File(AxGraves.getInstance().getDataFolder(), "data.json");
-        try (FileWriter fw = new FileWriter(file)) {
+        File temporary = new File(AxGraves.getInstance().getDataFolder(), "data.json.tmp");
+        try (FileWriter fw = new FileWriter(temporary)) {
             gson.toJson(array, fw);
+            fw.flush();
+            try {
+                Files.move(temporary.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (java.nio.file.AtomicMoveNotSupportedException ex) {
+                Files.move(temporary.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
+            temporary.delete();
+            return false;
         }
     }
 
@@ -86,7 +98,6 @@ public class SpawnedGraves {
         } catch (Exception ex) {
             return;
         }
-        file.delete();
         if (array == null) return;
 
         try {

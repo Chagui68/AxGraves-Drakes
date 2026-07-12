@@ -4,9 +4,12 @@ import com.github.drakescraft_labs.slimefun4.utils.SlimefunUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public final class SlimefunHook {
 
     private static boolean enabled;
+    private static final AtomicBoolean detectionFailureLogged = new AtomicBoolean();
 
     private SlimefunHook() {
     }
@@ -25,8 +28,15 @@ public final class SlimefunHook {
         }
         try {
             return SlimefunUtils.isSoulbound(item);
-        } catch (NoClassDefFoundError | Exception ex) {
-            return false;
+        } catch (LinkageError | RuntimeException ex) {
+            if (detectionFailureLogged.compareAndSet(false, true)) {
+                Bukkit.getLogger().log(
+                        java.util.logging.Level.SEVERE,
+                        "[AxGraves] Slimefun Soulbound detection failed. Items will be treated as Soulbound to prevent duplication.",
+                        ex
+                );
+            }
+            return true;
         }
     }
 }

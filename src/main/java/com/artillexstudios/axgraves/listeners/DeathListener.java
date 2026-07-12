@@ -112,25 +112,24 @@ public class DeathListener implements Listener {
 
             if (!event.getKeepInventory()) {
                 store = true;
-                drops = new ArrayList<>(event.getDrops());
+                drops = copyNonSoulbound(event.getDrops());
+                // Leave Soulbound drops visible to Slimefun's own death listener.
+                event.getDrops().removeIf(item -> !SlimefunHook.isSoulbound(item));
             } else if (overrideKeepInventory) {
                 store = true;
-                drops = Arrays.asList(player.getInventory().getContents());
-                player.getInventory().clear();
+                ItemStack[] contents = player.getInventory().getContents();
+                drops = copyNonSoulbound(Arrays.asList(contents));
+
+                // Preserve Soulbound items in their original slots and move only normal items.
+                for (int slot = 0; slot < contents.length; slot++) {
+                    ItemStack item = contents[slot];
+                    if (item != null && !SlimefunHook.isSoulbound(item)) {
+                        player.getInventory().setItem(slot, null);
+                    }
+                }
             }
 
-            if (store) {
-                event.getDrops().clear();
-            }
             if (debug) LogUtils.debug("[{}] store: {} - drops size: {}", player.getName(), store, drops.size());
-        }
-
-        if (!drops.isEmpty() && SlimefunHook.isEnabled()) {
-            int before = drops.size();
-            drops.removeIf(item -> item != null && SlimefunHook.isSoulbound(item));
-            if (debug && before != drops.size()) {
-                LogUtils.debug("[{}] removed {} soulbound items from drops", player.getName(), before - drops.size());
-            }
         }
 
         int xp = 0;
@@ -161,5 +160,16 @@ public class DeathListener implements Listener {
 
         final GraveSpawnEvent graveSpawnEvent = new GraveSpawnEvent(player, grave);
         Bukkit.getPluginManager().callEvent(graveSpawnEvent);
+    }
+
+    /** Copies only grave-safe items; Soulbound ownership remains with Slimefun. */
+    private static List<ItemStack> copyNonSoulbound(List<ItemStack> items) {
+        List<ItemStack> result = new ArrayList<>(items.size());
+        for (ItemStack item : items) {
+            if (item != null && !item.getType().isAir() && !SlimefunHook.isSoulbound(item)) {
+                result.add(item.clone());
+            }
+        }
+        return result;
     }
 }
