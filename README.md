@@ -1,5 +1,98 @@
-**Bug Reports and Feature Requests:** https://github.com/Artillex-Studios/Issues
+# AxGraves
 
-**Support:** https://dc.artillex-studios.com/
+A Minecraft plugin that creates a death chest (grave) at the location where a player dies, so they can recover their items.
 
-![axgraves-banner](https://github.com/Artillex-Studios/AxGraves/assets/52270269/771b2e74-58e4-4128-b822-099ec20802b0)
+## Features
+
+- Drops a grave chest containing all of the player's items at the death location.
+- Stores the player's XP inside the grave.
+- Configurable despawn timer, per-player grave limits, world filters, and death-cause blacklists.
+- Optional rotation and holograms for the grave entity.
+- Folia-compatible (regionised multithreading).
+
+## Configuration
+
+All options live in `plugins/AxGraves/config.yml` (auto-generated on first run). Notable keys:
+
+| Key | Default | Description |
+|---|---|---|
+| `despawn-time-seconds` | `468000` (130 hours) | Seconds before an empty / expired grave is removed. Set to `-1` to disable. |
+| `drop-items` | `true` | Whether remaining items fall to the ground when the grave expires. |
+| `store-items` | `true` | Whether to move items into the grave. |
+| `store-xp` | `true` | Whether to store XP. |
+| `xp-keep-percentage` | `1.0` | Fraction of stored XP returned to the player. |
+| `override-keep-inventory` | `true` | Force-store items even when `keepInventory` is enabled. |
+| `interact-only-own` | `false` | Restrict grave opening to the owner only. |
+| `disabled-worlds` | `[]` | Worlds where graves are not created. |
+| `blacklisted-death-causes` | `[]` | Death causes that skip grave creation (e.g. `VOID`). |
+| `death-listener-priority` | `MONITOR` | Bukkit event priority for the death listener. |
+| `save-graves.enabled` | `true` | Persist graves across server restarts. |
+
+## Commands
+
+| Command | Description | Permission |
+|---|---|---|
+| `/graves help` | Show the in-game help. | `axgraves.help` |
+| `/graves reload` | Reload `config.yml` and `messages.yml`. | `axgraves.reload` |
+| `/graves list [player]` | List your (or another player's) active graves. | `axgraves.list` / `axgraves.list.other` |
+| `/graves tp <id>` | Teleport to a grave by ID. | `axgraves.tp` |
+
+## Permissions
+
+| Permission | Default | Description |
+|---|---|---|
+| `axgraves.allowgraves` | `true` | Allow grave creation on death. |
+| `axgraves.list` | `true` | List your own graves. |
+| `axgraves.list.other` | `op` | List any player's graves. |
+| `axgraves.tp` | `op` | Teleport to a grave. |
+| `axgraves.tp.bypass` | `op` | Bypass ownership checks when teleporting. |
+| `axgraves.help` | `true` | Access the `/graves help` command. |
+| `axgraves.reload` | `op` | Reload configuration. |
+
+## Placeholders
+
+The plugin registers an identifier under `axgraves`. Available placeholders:
+
+- `%axgraves_despawn-time_<graveId>%` — time remaining until a specific grave despawns.
+- `%axgraves_despawn-time%` — despawn-time fallback for messages.
+
+## PlaceholderAPI placeholders
+
+When PlaceholderAPI is installed, the following player-scoped tokens are exposed:
+
+- `%axgraves_grave_count%` — number of active graves owned by the player.
+- `%axgraves_has_grave%` — `true` / `false`.
+
+## Compatibility
+
+| Server | Supported |
+|---|---|
+| Spigot 1.20.x | Yes |
+| Paper 1.20.x – 1.21.x | Yes |
+| Purpur 1.21.x | Yes |
+| Folia | Yes (`folia-supported: true`) |
+
+Requires **Java 21** on the server JVM.
+
+## Soft Dependencies
+
+- **Slimefun** — When present, items marked as `Soulbound` (either through the `Soulbound` interface
+  or via the `Soulbound Rune` lore flag) **are excluded** from the grave to prevent duplication.
+  AxGraves works normally when Slimefun is absent.
+
+## Building
+
+Requirements: JDK 21 and Maven 3.8+.
+
+```bash
+mvn -DskipTests package
+```
+
+The shaded jar is produced at `target/AxGraves-<version>-Drake.jar`.
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0**. See [`LICENSE`](LICENSE)
+for the full text.
+
+Based on the original `AxGraves` plugin by Artillex-Studios; modified under the terms of GPLv3.

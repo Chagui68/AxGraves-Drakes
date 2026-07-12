@@ -100,17 +100,41 @@ public class UpdateNotifier implements Listener {
 
     public boolean isOutdated(String current) {
         if (latest == null) return false;
-        String[] parts1 = latest.split("\\.");
-        String[] parts2 = current.split("\\.");
+        int[] parts1 = parseVersion(latest);
+        int[] parts2 = parseVersion(current);
         for (int i = 0; i < 3; i++) {
-            int num1 = Integer.parseInt(parts1[i]);
-            int num2 = Integer.parseInt(parts2[i]);
-            if (num1 > num2) {
+            if (parts1[i] > parts2[i]) {
                 return true;
-            } else if (num1 < num2) {
+            } else if (parts1[i] < parts2[i]) {
                 return false;
             }
         }
         return false;
+    }
+
+    private static int[] parseVersion(String version) {
+        int[] result = new int[3];
+        if (version == null) return result;
+        String[] parts = version.split("\\.");
+        for (int i = 0; i < Math.min(3, parts.length); i++) {
+            StringBuilder digits = new StringBuilder();
+            for (char c : parts[i].toCharArray()) {
+                if (Character.isDigit(c)) {
+                    digits.append(c);
+                } else {
+                    break;
+                }
+            }
+            if (digits.length() == 0) {
+                result[i] = 0;
+            } else {
+                try {
+                    result[i] = Integer.parseInt(digits.toString());
+                } catch (NumberFormatException ex) {
+                    result[i] = 0;
+                }
+            }
+        }
+        return result;
     }
 }

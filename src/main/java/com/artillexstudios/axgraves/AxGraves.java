@@ -14,6 +14,7 @@ import com.artillexstudios.axgraves.commands.CommandManager;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.hooks.SlimefunHook;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
 import com.artillexstudios.axgraves.schedulers.SaveGraves;
@@ -58,6 +59,7 @@ public final class AxGraves extends AxPlugin {
         MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
         new DeathListener();
+        SlimefunHook.init();
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         CommandManager.load();

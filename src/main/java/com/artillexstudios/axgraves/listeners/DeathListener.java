@@ -6,6 +6,7 @@ import com.artillexstudios.axgraves.api.events.GravePreSpawnEvent;
 import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.hooks.SlimefunHook;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -122,6 +123,14 @@ public class DeathListener implements Listener {
                 event.getDrops().clear();
             }
             if (debug) LogUtils.debug("[{}] store: {} - drops size: {}", player.getName(), store, drops.size());
+        }
+
+        if (!drops.isEmpty() && SlimefunHook.isEnabled()) {
+            int before = drops.size();
+            drops.removeIf(item -> item != null && SlimefunHook.isSoulbound(item));
+            if (debug && before != drops.size()) {
+                LogUtils.debug("[{}] removed {} soulbound items from drops", player.getName(), before - drops.size());
+            }
         }
 
         int xp = 0;

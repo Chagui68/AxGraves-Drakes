@@ -2,8 +2,8 @@ prefix: "<gradient:#FF00FF:#DD00FF><b>AxGraves</b></gradient> &7» "
 
 # how fast should the graves disappear
 # set to -1 to make graves never despawn
-# in seconds
-despawn-time-seconds: 180
+# in seconds (468000 = 130 hours)
+despawn-time-seconds: 468000
 
 # should graves drop all items on the ground when they expire?
 # if false: items will be removed
@@ -163,9 +163,9 @@ holograms:
 # should be plugin notify you if there is a new update?
 update-notifier:
   # if enabled, it will display the message in the console
-  enabled: true
+  enabled: false
   # if enabled, it will broadcast the update message to all players who have the <plugin-name>.update-notify permission
-  on-join: true
+  on-join: false
 
 # prints out a lot of information about the plugin in the console
 # this can cause a lot of spam, only use if a developer asks you to
