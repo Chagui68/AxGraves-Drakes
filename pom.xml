@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxGraves</artifactId>
-    <version>1.1-Drake</version>
+    <version>1.0-Drake</version>
     <packaging>jar</packaging>
 
     <name>AxGraves</name>
